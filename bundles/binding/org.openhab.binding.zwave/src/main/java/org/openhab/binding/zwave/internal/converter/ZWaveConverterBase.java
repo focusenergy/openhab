@@ -126,9 +126,9 @@ public abstract class ZWaveConverterBase {
 		ZWaveCommandConverter<?,?> matchingCommandConverter = this.commandConverters.get(commandClass);
 		// If the subclass is not supported, it is possible that the superclass is (i.e. Percentage vs Decimal)
 		if (matchingCommandConverter == null) {
-			for (ZWaveCommandConverter<?,?> converter : this.commandConverters.values()) {
-				if (converter.getCommand().getClass().isInstance(commandClass)) {
-					matchingCommandConverter = converter;
+			for (Class<? extends Command> commandClassKey : this.commandConverters.keySet()) {
+				if (commandClassKey.isInstance(commandClass)) {
+					matchingCommandConverter = this.commandConverters.get(commandClassKey);
 					break;
 				}
 			}
