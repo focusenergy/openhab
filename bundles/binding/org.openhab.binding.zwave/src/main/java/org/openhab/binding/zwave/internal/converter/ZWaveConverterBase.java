@@ -123,6 +123,16 @@ public abstract class ZWaveConverterBase {
 	 * @return a converter object that converts between the value and the state;
 	 */
 	protected ZWaveCommandConverter<?,?> getCommandConverter(Class<? extends Command> commandClass) {
-		return this.commandConverters.get(commandClass);
+		ZWaveCommandConverter<?,?> matchingCommandConverter = this.commandConverters.get(commandClass);
+		// If the subclass is not supported, it is possible that the superclass is (i.e. Percentage vs Decimal)
+		if (matchingCommandConverter == null) {
+			for (Class<? extends Command> commandClassKey : this.commandConverters.keySet()) {
+				if (commandClassKey.isInstance(commandClass)) {
+					matchingCommandConverter = this.commandConverters.get(commandClassKey);
+					break;
+				}
+			}
+		}
+		return matchingCommandConverter;
 	}	
 }
